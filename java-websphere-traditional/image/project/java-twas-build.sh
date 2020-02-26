@@ -151,7 +151,7 @@ run() {
 
 test() {
   note "Test project in the foreground"
-  exec_run_mvn package test
+  exec_run_mvn package verify
 }
 
 prep() {
