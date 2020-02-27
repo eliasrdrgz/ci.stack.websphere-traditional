@@ -45,11 +45,14 @@ ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
 
 RUN useradd --uid 1000 --gid 0 --shell /bin/bash --create-home java_user \
   && mkdir -p /mvn/repository \
-  && chown -R java_user:0 /mvn
+  && chown -R java_user:0 /mvn \
+  && mkdir -p /work/home
 
 COPY ./LICENSE /licenses/
 COPY --chown=java_user:0 ./project /project
 COPY --chown=java_user:0 ./config /config
+
+RUN chmod -R 777 /work /opt/IBM /etc/websphere
 
 COPY ./mvn-stack-settings.xml /usr/share/maven/conf/settings.xml
 COPY ./mvn-stack-settings.xml /project/mvn-stack-settings.xml

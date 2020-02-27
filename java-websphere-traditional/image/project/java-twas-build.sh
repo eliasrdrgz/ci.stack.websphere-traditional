@@ -43,6 +43,15 @@ exec_run_mvn () {
 }
 
 common() {
+  # Check that we have a writable home directory
+  if [ ! -w "$HOME" ]; then
+    export HOME=/work/home
+    if [ ! -w "$HOME" ]; then
+      error "HOME folder is not writable"
+      exit 1
+    fi
+  fi
+
   # Test pom.xml is present and a file.
   if [ ! -f ./pom.xml ] && [ ! -z "${APPSODY_DEV_MODE}" ]; then
     error "Could not find Maven pom.xml
@@ -143,7 +152,9 @@ run() {
   note "Build and run project in the foreground"
 ##  exec_run_mvn -Dmaven.test.skip=true \
 ##    clean spring-boot:run
+  run_mvn -Dmaven.test.skip=true clean package
   mkdir -p /work/config/user-app
+  cp -r /project/user-app/config/* /work/config/
   cp /project/user-app/app/target/app.ear /work/config/user-app/
   (cd / && /work/configure.sh)
   /work/start_server.sh
